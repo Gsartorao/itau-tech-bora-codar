@@ -1,6 +1,6 @@
 Projeto Final Itaú Formação Tech Edição
 
-#### Edição 05 - Projeto - BORA CODAR - java sobre criação de conta
+#### Edição 05 - Projeto - BORA CODAR - java sobre criação de contas
 
 #### GRUPO 02 - GAMA ITAUTECH 
 
