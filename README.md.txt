@@ -19,8 +19,6 @@ Visual Studio Code no Windows.
 
 - JAVA
 
-**Autoria**
-
 **Nome do projeto** Bora codar
 
 **Membros**
