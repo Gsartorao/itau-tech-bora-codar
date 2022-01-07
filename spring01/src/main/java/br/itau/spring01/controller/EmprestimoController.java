@@ -18,91 +18,67 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.itau.spring01.model.Cliente;
+import br.itau.spring01.model.Emprestimo;
+import br.itau.spring01.model.dto.SolicitarEmprestimo;
 import br.itau.spring01.repository.ClienteRepo;
+import br.itau.spring01.repository.EmprestimoRepo;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/emprestimo")
 public class EmprestimoController {
 
-    @Autowired // injeção de dependência = cria classe, escreve os métodos, e cria um objeto
-               // para uso
-    private ClienteRepo repo;
+    @Autowired 
 
-    @GetMapping("/all")
-    public List<Cliente> listarTodos() {
-        List<Cliente> list = (List<Cliente>) repo.findAll(); // findAll retorna todos os itens no BD
-
-        return list;
-    }
-
-    @GetMapping("/list")
-    public Page<Cliente> listarTodosPaginado(Pageable pageable) {
-        Page<Cliente> list = repo.findAll(pageable); // findAll retorna todos os itens no BD
-
-        return list;
-    }
-
-    @GetMapping("/{codigo}") // {indica uma variável}
-    public ResponseEntity<Cliente> buscarCliente(@PathVariable long codigo) {
-        // busca um cliente, e se não encontrar retorna null
-        Cliente clientFound = repo.findById(codigo).orElse(null);
-
-        if (clientFound != null) { // achou o cliente no BD
-            return ResponseEntity.ok(clientFound); // retorna o cliente com status 200
-        }
-
-        return ResponseEntity.notFound().build(); // retorna status 404 sem corpo (cliente)
-    }
-
-    @PostMapping
-    public ResponseEntity<Cliente> inserirCliente(@RequestBody Cliente client) {
-        Cliente newClient = repo.save(client);
-
-        return ResponseEntity.ok(newClient);
-    }
-
-
-    @PutMapping
-    public ResponseEntity<Cliente> atualizarCliente(@RequestBody Cliente client) {
-        if(client.getCod() > 0){
-            Cliente newClient = repo.save(client);
-
-            return ResponseEntity.ok(newClient);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-
-    @DeleteMapping("/{codigo}")
-    public ResponseEntity<Void> apagarCliente(@PathVariable long codigo) {
-
-        // antes de apagar, verifica se este cliente existe
-        Cliente clienteEncontrado = repo.findById(codigo).orElse(null);
-
-        if (clienteEncontrado != null) { // achou o cliente no BD
-            try{
-                repo.deleteById(codigo);
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-        }
-
-        
-
-        return ResponseEntity.notFound().build();
-
-    }
-
-    @PostMapping("/email")
-    public ResponseEntity<Cliente> buscarPorEmail(@RequestBody Cliente cliente) {
-        Cliente clienteEncontrado = repo.findByEmail(cliente.getEmail());
-
-        if (clienteEncontrado != null) { // achou o cliente no BD
-            return ResponseEntity.ok(clienteEncontrado); // retorna o cliente com status 200
-        }
-
-        return ResponseEntity.notFound().build();
-    }
+    private EmprestimoRepo repoemprestimo;
     
-}
+    @Autowired
+    private ClienteRepo repocliente;
+
+
+    @GetMapping
+    public List<Emprestimo> listarTodos(){
+        List<Emprestimo> lista = (List<Emprestimo>) repoemprestimo.findAll();
+
+        return lista;
+        
+    }
+
+  
+    /*@PostMapping ("/solicitarEmprestimo/{emprestimo}")
+    public Boolean emprestimo (@PathVariable long solicitarEmprestimo){
+        double valorSolicitado = 3000;
+        double valorTotalEmpréstimo = valorSolicitado + valorSolicitado * 0.2;
+        int parcelas = 18;
+        double valorParcelas = 200;
+        Emprestimo cliente = repo.findByEmail(String email).orElse(null);
+        return Cartao.transacaoCompra(valorCompra, cartao);
+
+    }*/ 
+
+    @PostMapping("/solicitaremprestimo")
+    public ResponseEntity<Emprestimo> solicitarEmprestimo(@RequestBody SolicitarEmprestimo novoEmprestimo) {
+        Cliente clienteEncontrado = repocliente.findByCpf(novoEmprestimo.cpf);
+
+        if (clienteEncontrado != null) { // achou o cliente no BD
+            //return ResponseEntity.ok(clienteEncontrado); // retorna o cliente com status 200
+
+            Emprestimo emprestimo = new Emprestimo(novoEmprestimo, clienteEncontrado);
+            emprestimo.aprovacaoEmprestimo(emprestimo);
+            repoemprestimo.save(emprestimo);
+
+             return ResponseEntity.ok(emprestimo);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    }
+
+
+
+
+   
+
+    
+    

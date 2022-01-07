@@ -3,12 +3,16 @@ package br.itau.spring01.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import br.itau.spring01.model.Cliente;
+import br.itau.spring01.model.dto.CadastroCliente;
 import br.itau.spring01.repository.ClienteRepo;
 
 @RestController
@@ -25,6 +29,15 @@ public class ClienteController {
 
         return lista;
         
+    }
+
+    @PostMapping
+    public ResponseEntity<Cliente> inserirCliente(@RequestBody CadastroCliente novoCliente) {
+        Cliente cliente = new Cliente(novoCliente);
+        
+        repo.save(cliente);
+
+        return ResponseEntity.ok(cliente);
     }
     
 }

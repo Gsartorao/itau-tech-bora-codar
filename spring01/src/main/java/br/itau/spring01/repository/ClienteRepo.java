@@ -14,4 +14,5 @@ import br.itau.spring01.model.Cliente;
 public interface ClienteRepo extends CrudRepository<Cliente, Long> {
     public Cliente findByEmail(String email);
     public Page<Cliente> findAll(Pageable pageable); // modificação do findAll para ser paginado
+    public Cliente findByCpf(int cpf);
 }

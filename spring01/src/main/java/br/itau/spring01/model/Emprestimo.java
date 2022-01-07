@@ -11,51 +11,59 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import br.itau.spring01.model.dto.SolicitarEmprestimo;
+
 @Entity
 @Table(name = "emprestimo")
 public class Emprestimo {
-    public static double limiteEmprestimo = 0.35;
+   private double limiteEmprestimo = 5000;
+    
+    
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long cod;
     
-
-    @Column(name = "numero_do_emprestimo", length = 10, nullable = false)
-    private int numeroEmprestimo;
-
-    @Column(name = "renda", length = 10)
+    @Column(name = "renda", length = 10, nullable = false)
     private double renda;
     
-    @Column(name = "valor_disponibilizado", length = 10)
-    private double valorDispinobilizado;
+    @Column(name = "valor_disponibilizado", length = 10, nullable = false )
+    private double valorDisponibilizado;
     
-    @Column(name = "total_emprestimo", length = 10)
-    private double totalEmprestimo;
+    @Column(name = "total_emprestimo", length = 10, nullable = false)
+    private double totalEmprestimo = valorDisponibilizado * 0.2;
     
-    @Column(name = "juros", length =  5)
-    private double juros;
-    
-    @Column(name = "limite_parcela", length = 10)
+    @Column(name = "limite_parcela", length = 10, nullable = false)
     private double limiteParcela;
     
-    @Column(name = "prazo", length = 2)
+    @Column(name = "prazo", length = 2, nullable = false)
     private int prazo;
     
-    @Column(name = "aprovado", length = 1)
+    @Column(name = "aprovado", length = 1, nullable = false)
     private boolean aprovado;
     
-    @Column(name = "parcela", length = 10)
+    @Column(name = "parcela", length = 10, nullable = false)
     private double parcela;
     
-    @Column(name = "saldo_devedor", length = 10)
+    @Column(name = "saldo_devedor", length = 10, nullable = false)
     private double saldoDevedor;
 
 
-    @ManyToOne // N:1 =  cada veiculo de um proprietario, mas um proprietario pode ter vários veículos
+    @ManyToOne 
     @JoinColumn(name = "cod_cliente")
-    @JsonIgnoreProperties("emprestimo") // para cada proprietario, não traga a lista de veículos
-    private Cliente owner; // owner = proprietario
+    @JsonIgnoreProperties("emprestimo") 
+    private Cliente owner; 
+
+    public Emprestimo(){
+        
+    }
+
+    public Emprestimo(SolicitarEmprestimo novoEmprestimo, Cliente cliente) {
+        this.renda = novoEmprestimo.renda;
+        this.valorDisponibilizado = novoEmprestimo.valorSolicitado;
+        this.prazo = novoEmprestimo.quantidadeParcela;
+        this.owner = cliente;
+    }
 
 
     public long getCod() {
@@ -89,12 +97,12 @@ public class Emprestimo {
 
 
     public double getValorDispinobilizado() {
-        return valorDispinobilizado;
+        return valorDisponibilizado;
     }
 
 
     public void setValorDispinobilizado(double valorDispinobilizado) {
-        this.valorDispinobilizado = valorDispinobilizado;
+        this.valorDisponibilizado = valorDispinobilizado;
     }
 
 
@@ -107,15 +115,6 @@ public class Emprestimo {
         this.totalEmprestimo = totalEmprestimo;
     }
 
-
-    public double getJuros() {
-        return juros;
-    }
-
-
-    public void setJuros(double juros) {
-        this.juros = juros;
-    }
 
 
     public double getLimiteParcela() {
@@ -138,14 +137,14 @@ public class Emprestimo {
     }
 
 
-    public boolean isAprovado() {
+    /*public boolean getAprovado() {
         return aprovado;
     }
 
 
     public void setAprovado(boolean aprovado) {
         this.aprovado = aprovado;
-    }
+    }*/
 
 
     public double getParcela() {
@@ -177,19 +176,63 @@ public class Emprestimo {
         this.owner = owner;
     }
 
-        public double valorMaximoParcela(){
-            return renda * limiteEmprestimo;
+    public Emprestimo aprovacaoEmprestimo(Emprestimo emprestimo) {
+        //construir lógica 
+        emprestimo.parcela = valorParcela(valorTotalEmprestimo(emprestimo.valorDisponibilizado), emprestimo.prazo);
+        if(emprestimo.parcela < limiteParcela())
+        emprestimo.aprovado = true;
+        return emprestimo;
+        }
+       
+        public double limiteParcela(){
+            return renda * 0.30;
         }
 
-    
-    
-
-
-    public boolean limiteParcela(double valor) {
-        if(valor <= valorMaximoParcela()) {
-            return true;
+        public double valorParcela(double valorTotalEmprestimo, int quantidadeParcelas ){
+           return valorTotalEmprestimo / quantidadeParcelas;
         }
-        return false;
-    }    
-}    
+
+        public double valorTotalEmprestimo(double valorSolicitado){
+            return valorSolicitado * 1.5;
+        }
+        
+    }
+
+
+
+
+
+
+
+
+
+
+    /*public void valorDispinobilizado(double valorDisponibilizado, double saldoConta){
+        
+        saldoConta = saldoConta + valorDisponibilizado;
+            
+
+    }
+
+    public void valorTotalEmprestimo(double emprestimoTotal){
+        get.valorDisponibilizado();
+    
+    }
+
+    public double saldoDevedor(double saldo, double totalEmprestimo, double parcelasPagas){
+    return saldo = totalEmprestimo - parcelasPagas;
+    }
+
+    public double limiteParcela(){
+            return renda * 0.30;
+    }
+
+    public double valorParcela(double valor, double valorTotalEmprestimo){
+        valor = valorTotalEmprestimo / parcela;
+    }*/
+
+    
+
+
+
 

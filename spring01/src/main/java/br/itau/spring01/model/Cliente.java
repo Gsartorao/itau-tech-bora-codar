@@ -12,6 +12,8 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import br.itau.spring01.model.dto.CadastroCliente;
+
 @Entity // indica que a classe sera armazenada na tabela
 @Table(name = "cliente") //nome da tabela no banco de dados
 public class Cliente {
@@ -86,6 +88,20 @@ public class Cliente {
     public void setCartao(List<Cartao> cartao) {
         this.cartao = cartao;
     }
+
+
+    public Cliente (){
+        
+    }
+    public Cliente (CadastroCliente cliente){
+        cpf = cliente.cpf;
+        fone = cliente.telefone;
+        name = cliente.nome;
+        email = cliente.email;        
+        
+    }
+
+
 
     
 
