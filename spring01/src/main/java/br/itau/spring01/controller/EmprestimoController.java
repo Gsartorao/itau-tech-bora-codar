@@ -1,24 +1,17 @@
 package br.itau.spring01.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.itau.spring01.model.Cliente;
 import br.itau.spring01.model.Emprestimo;
+import br.itau.spring01.model.dto.PagamentoParcela;
 import br.itau.spring01.model.dto.SolicitarEmprestimo;
 import br.itau.spring01.repository.ClienteRepo;
 import br.itau.spring01.repository.EmprestimoRepo;
@@ -28,8 +21,7 @@ import br.itau.spring01.repository.EmprestimoRepo;
 @RequestMapping("/emprestimo")
 public class EmprestimoController {
 
-    @Autowired 
-
+    @Autowired
     private EmprestimoRepo repoemprestimo;
     
     @Autowired
@@ -43,6 +35,8 @@ public class EmprestimoController {
         return lista;
         
     }
+
+    
 
   
     /*@PostMapping ("/solicitarEmprestimo/{emprestimo}")
@@ -68,6 +62,19 @@ public class EmprestimoController {
             repoemprestimo.save(emprestimo);
 
              return ResponseEntity.ok(emprestimo);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/pagamentoparcela")
+    public ResponseEntity<Emprestimo> pagamentoParcela(@RequestBody PagamentoParcela novoPagamento) {
+        Emprestimo emprestimoEncontrado = repoemprestimo.findByCod(novoPagamento.cod);
+
+        if (emprestimoEncontrado != null) {
+            repoemprestimo.save(Emprestimo.pagamentoParcela(emprestimoEncontrado, novoPagamento.valorPago));
+
+            return ResponseEntity.ok(emprestimoEncontrado);
         }
 
         return ResponseEntity.notFound().build();

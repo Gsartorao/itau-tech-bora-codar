@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
 import br.itau.spring01.model.dto.SolicitarEmprestimo;
 
 @Entity
@@ -33,11 +34,9 @@ public class Emprestimo {
     @Column(name = "total_emprestimo", length = 10, nullable = false)
     private double totalEmprestimo = valorDisponibilizado * 0.2;
     
-    @Column(name = "limite_parcela", length = 10, nullable = false)
-    private double limiteParcela;
-    
-    @Column(name = "prazo", length = 2, nullable = false)
-    private int prazo;
+     
+    @Column(name = "quantidade_parcelas", length = 2, nullable = false)
+    private int quantidadeParcelas;
     
     @Column(name = "aprovado", length = 1, nullable = false)
     private boolean aprovado;
@@ -47,6 +46,12 @@ public class Emprestimo {
     
     @Column(name = "saldo_devedor", length = 10, nullable = false)
     private double saldoDevedor;
+
+    @Column(name = "parcelas_pagas", length = 2, nullable = false)
+    private double parcelasPagas;
+
+    @Column(name = "juros", length = 4, nullable = false)
+    private double juros;
 
 
     @ManyToOne 
@@ -61,10 +66,12 @@ public class Emprestimo {
     public Emprestimo(SolicitarEmprestimo novoEmprestimo, Cliente cliente) {
         this.renda = novoEmprestimo.renda;
         this.valorDisponibilizado = novoEmprestimo.valorSolicitado;
-        this.prazo = novoEmprestimo.quantidadeParcela;
+        this.quantidadeParcelas = novoEmprestimo.quantidadeParcela;
         this.owner = cliente;
+        this.juros = 1.5;
     }
 
+  
 
     public long getCod() {
         return cod;
@@ -73,16 +80,6 @@ public class Emprestimo {
 
     public void setCod(long cod) {
         this.cod = cod;
-    }
-
-
-    public int getNumeroEmprestimo() {
-        return numeroEmprestimo;
-    }
-
-
-    public void setNumeroEmprestimo(int numeroEmprestimo) {
-        this.numeroEmprestimo = numeroEmprestimo;
     }
 
 
@@ -114,27 +111,7 @@ public class Emprestimo {
     public void setTotalEmprestimo(double totalEmprestimo) {
         this.totalEmprestimo = totalEmprestimo;
     }
-
-
-
-    public double getLimiteParcela() {
-        return limiteParcela;
-    }
-
-
-    public void setLimiteParcela(double limiteParcela) {
-        this.limiteParcela = limiteParcela;
-    }
-
-
-    public int getPrazo() {
-        return prazo;
-    }
-
-
-    public void setPrazo(int prazo) {
-        this.prazo = prazo;
-    }
+  
 
 
     /*public boolean getAprovado() {
@@ -146,6 +123,14 @@ public class Emprestimo {
         this.aprovado = aprovado;
     }*/
 
+
+    public int getQuantidadeParcelas() {
+        return quantidadeParcelas;
+    }
+
+    public void setQuantidadeParcelas(int quantidadeParcelas) {
+        this.quantidadeParcelas = quantidadeParcelas;
+    }
 
     public double getParcela() {
         return parcela;
@@ -177,12 +162,18 @@ public class Emprestimo {
     }
 
     public Emprestimo aprovacaoEmprestimo(Emprestimo emprestimo) {
-        //construir lógica 
-        emprestimo.parcela = valorParcela(valorTotalEmprestimo(emprestimo.valorDisponibilizado), emprestimo.prazo);
-        if(emprestimo.parcela < limiteParcela())
+        emprestimo.totalEmprestimo = valorTotalEmprestimo(emprestimo.valorDisponibilizado, emprestimo.juros);
+        emprestimo.parcela = valorParcela(emprestimo.totalEmprestimo, emprestimo.quantidadeParcelas);
+        if(emprestimo.parcela < limiteParcela() && emprestimo.valorDisponibilizado < emprestimo.limiteEmprestimo){
         emprestimo.aprovado = true;
-        return emprestimo;
+        emprestimo.saldoDevedor = emprestimo.totalEmprestimo;   
+        } 
+        else{
+            emprestimo.aprovado = false;
+            emprestimo.saldoDevedor = 0;
         }
+        return emprestimo;
+        } 
        
         public double limiteParcela(){
             return renda * 0.30;
@@ -192,47 +183,22 @@ public class Emprestimo {
            return valorTotalEmprestimo / quantidadeParcelas;
         }
 
-        public double valorTotalEmprestimo(double valorSolicitado){
-            return valorSolicitado * 1.5;
+        public double valorTotalEmprestimo(double valorSolicitado, double juros){
+            return valorSolicitado * juros;
         }
-        
+
+        public static Emprestimo pagamentoParcela(Emprestimo emprestimo, double valor){
+            emprestimo.saldoDevedor = emprestimo.saldoDevedor - valor;
+            emprestimo.parcelasPagas += 1;
+            return emprestimo;
+
+        }
+
+
+              
+                
     }
 
-
-
-
-
-
-
-
-
-
-    /*public void valorDispinobilizado(double valorDisponibilizado, double saldoConta){
-        
-        saldoConta = saldoConta + valorDisponibilizado;
-            
-
-    }
-
-    public void valorTotalEmprestimo(double emprestimoTotal){
-        get.valorDisponibilizado();
-    
-    }
-
-    public double saldoDevedor(double saldo, double totalEmprestimo, double parcelasPagas){
-    return saldo = totalEmprestimo - parcelasPagas;
-    }
-
-    public double limiteParcela(){
-            return renda * 0.30;
-    }
-
-    public double valorParcela(double valor, double valorTotalEmprestimo){
-        valor = valorTotalEmprestimo / parcela;
-    }*/
-
-    
-
-
+   
 
 
