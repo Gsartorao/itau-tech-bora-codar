@@ -18,13 +18,13 @@ import br.itau.spring01.model.dto.CadastroCliente;
 @Table(name = "cliente") //nome da tabela no banco de dados
 public class Cliente {
 
-    @Id // indica que este campo será chave primária (pk)
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id será gerado sequencialmente de forma automatica
     private long cod;
 
         
     @Column(name = "nome", length = 200, nullable = false)
-    private String name;
+    private String nome;
 
     @Column(name = "cpf", length = 15, nullable = false, unique = true)
     private int cpf;
@@ -33,12 +33,12 @@ public class Cliente {
     private String email ;
 
     @Column(name = "fone", length = 50, nullable = false)
-    private String fone ;
+    private String telefone ;
 
     @OneToMany(mappedBy = "owner")  // Um Cliente pode ter vários veiculos 
     // owner = atributo do veiculo que faz o relacionamento
     @JsonIgnoreProperties("owner")  // quando buscar os veículos, não traga os proprietários
-    private List<Cartao> cartao;
+    
    
 
     public long getCod() {
@@ -50,11 +50,11 @@ public class Cliente {
     }
 
     public String getName() {
-        return name;
+        return nome;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.nome = name;
     }
 
     public int getCpf() {
@@ -74,35 +74,21 @@ public class Cliente {
     }
 
     public String getFone() {
-        return fone;
+        return telefone;
     }
 
     public void setFone(String fone) {
-        this.fone = fone;
+        this.telefone = fone;
     }
 
-    public List<Cartao> getCartao() {
-        return cartao;
-    }
-
-    public void setCartao(List<Cartao> cartao) {
-        this.cartao = cartao;
-    }
-
-
-    public Cliente (){
-        
-    }
+    public Cliente (){}
     public Cliente (CadastroCliente cliente){
         cpf = cliente.cpf;
-        fone = cliente.telefone;
-        name = cliente.nome;
+        telefone = cliente.telefone;
+        nome = cliente.nome;
         email = cliente.email;        
         
     }
-
-
-
     
 
     

@@ -1,9 +1,6 @@
 package br.itau.spring01.model;
 
-
 import java.util.Date;
-
-
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import br.itau.spring01.model.dto.SolicitaCapitalizacao;
+
 @Entity
 @Table(name = "Capitalizacao")
 public class Capitalizacao {
@@ -22,8 +21,8 @@ public class Capitalizacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long cod;
 
-    @Column(name = "numero_titulo", length = 100, nullable  = false)
-    private String NumeroTitulo;
+    @Column(name = "numero_titulo", length = 100, nullable = false)
+    private String numeroTitulo;
 
     @ManyToOne
     @JoinColumn(name = "cod_cliente")
@@ -44,18 +43,36 @@ public class Capitalizacao {
     @Column(name = "valor_aporte_mes")
     private double valorAporteMes;
 
-    @Column(name = "numero_sorte", length = 5, nullable  = false, unique = true)
+    @Column(name = "numero_sorte", length = 5, nullable = false, unique = true)
     private String numeroSorte;
-       
+
     @Column(name = "correcao")
     private double correcao;
-    
+
     @Column(name = "valor_multa")
     private double valorMulta;
 
-    @Column(name = "saldo")
-    private double saldo;
+    public Capitalizacao(SolicitaCapitalizacao capitalizacao, Cliente cliente) {
 
+        numeroTitulo = "1255";
+        this.cliente = cliente;     
+        dataInicio = capitalizacao.dataInicio;
+        dataFim = capitalizacao.dataFim;
+        diaDebito = capitalizacao.diaDebito;
+        valorTotalPago = capitalizacao.valorAporteMes;
+        valorAporteMes = capitalizacao.valorAporteMes;
+        numeroSorte = "158";
+        correcao = 0.1;
+        valorMulta = 0.80;
+
+    }
+
+    public Capitalizacao Resgate(Capitalizacao cap)
+    {
+        //if( dataFim )
+
+        return cap;
+    }
 
 
     public long getCod() {
@@ -67,11 +84,11 @@ public class Capitalizacao {
     }
 
     public String getNumeroTitulo() {
-        return NumeroTitulo;
+        return numeroTitulo;
     }
 
     public void setNumeroTitulo(String numeroTitulo) {
-        NumeroTitulo = numeroTitulo;
+        numeroTitulo = numeroTitulo;
     }
 
     public Cliente getCliente() {
@@ -104,10 +121,9 @@ public class Capitalizacao {
 
     public void setDiaDebito(int diaDebito) {
 
-        if (diaDebito > 27) 
-        {
-            diaDebito = 1 ;
-        }      
+        if (diaDebito > 27) {
+            diaDebito = 1;
+        }
 
         this.diaDebito = diaDebito;
     }
@@ -151,14 +167,5 @@ public class Capitalizacao {
     public void setValorMulta(double valorMulta) {
         this.valorMulta = valorMulta;
     }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-    
 
 }
