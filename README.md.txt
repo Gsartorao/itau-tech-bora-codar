@@ -24,7 +24,7 @@ Visual Studio Code no Windows.
 **Membros**
 
 - Cristiano Roberto de Oliveira - https://www.linkedin.com/in/cristiano-oliveira-48085032/
-- Edmilson Santos lima
+- Edmilson Santos lima - https://www.linkedin.com/in/edmilson-lima-722aa8b7/
 - Fernanda Rafaela Gomes Borges - https://www.linkedin.com/in/fernanda-gomes-borges
 - Guilherme Luiz Sartorão - www.linkedin.com/in/guilherme-sartorão-067b99107
 - Leticia Maria Araujo Ferreira da Silva Bomtorin - https://www.linkedin.com/in/leticia-bomtorin/
