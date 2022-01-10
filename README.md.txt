@@ -26,5 +26,5 @@ Visual Studio Code no Windows.
 - Cristiano Roberto de Oliveira
 - Edmilson Santos lima
 - Fernanda Rafaela Gomes Borges
-- Guilherme Luiz Sartorão 	
-- Leticia Maria Araujo Ferreira da Silva Bomtorin
+- Guilherme Luiz Sartorão 	 -
+- Leticia Maria Araujo Ferreira da Silva Bomtorin - https://www.linkedin.com/in/leticia-bomtorin/
